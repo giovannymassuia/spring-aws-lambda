@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'io.giovannymassuia'
-version = '0.0.1-SNAPSHOT'
+version = '1.0'
 sourceCompatibility = '11'
 
 repositories {
@@ -13,8 +13,12 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-graphql'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    implementation 'com.graphql-java-kickstart:graphql-spring-boot-starter:13.0.0'
+
+    // lambda
+    implementation 'com.amazonaws.serverless:aws-serverless-java-container-springboot2:1.9.1'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework:spring-webflux'
@@ -24,3 +28,15 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+// Task for building the zip file for upload
+task buildZip(type: Zip) {
+    // set the base name of the zip file
+    from compileJava
+    from processResources
+    into('lib') {
+        from configurations.runtimeClasspath
+    }
+}
+
+build.dependsOn buildZip

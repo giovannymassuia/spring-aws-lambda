@@ -1,0 +1,32 @@
+service: spring-boot-serverless
+
+provider:
+  name: aws
+  region: us-east-1
+  runtime: java11
+
+package:
+  artifact: build/distributions/spring-aws-lambda-1.0.zip
+
+functions:
+  springBootServerless:
+    memorySize: 512
+    handler: io.giovannymassuia.springawslambda.LambdaHandler::handleRequest
+    snapStart: true
+    environment:
+      JAVA_TOOL_OPTIONS: -XX:+TieredCompilation -XX:TieredStopAtLevel=1 # https://aws.amazon.com/blogs/compute/optimizing-aws-lambda-function-performance-for-java/
+      AWS_SERVERLESS_JAVA_CONTAINER_INIT_GRACE_TIME: 1000
+    events:
+      - http:
+          path: /users
+          method: get
+      - http:
+          path: /users/{userId}
+          method: get
+      - http:
+          path: /graphql
+          method: post
+    timeout: 30
+
+plugins:
+  - serverless-better-credentials
