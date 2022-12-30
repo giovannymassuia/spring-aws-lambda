@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "serverless-better-credentials": "^1.1.3"
+  }
+}
